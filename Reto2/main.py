@@ -65,13 +65,16 @@ class Veterinary:
             
 # Funciones del sistemas
 def registerClient():
-    name = input('Ingrese el nombre del cliente: ').strip()
-    contact = input('Ingrese contacto del cliente: ').strip()
-    address = input('Ingrese la dirección del cliente: ').strip()
-    
-    cliente = Veterinary.Client(name, contact, address)
-    clientes.append(cliente)
-    print(f'Cliente registrado con ID: {cliente.id_counter}')
+    try:
+        name = input('Ingrese el nombre del cliente: ').strip()
+        contact = input('Ingrese contacto del cliente: ').strip()
+        address = input('Ingrese la dirección del cliente: ').strip()
+        
+        cliente = Veterinary.Client(name, contact, address)
+        clientes.append(cliente)
+        print(f'Cliente registrado con ID: {cliente.id_counter}')
+    except ValueError as e:
+        print(f'Error: {e}')
 
 def registerPet(): 
     print('Clientes disponibles:')
@@ -115,36 +118,37 @@ def scheduleDate():
     for c in clientes:
         print(f'\tID: {c.id_counter}, Nombre: {c.name}')          
     
-    client_id = int(input('Ingrese el ID del cliente: '))
-    client = next((c for c in clientes if c.id_counter == client_id), None)
-    if not client:
-        print(f'\tNo existe cliente registrado con el ID {client_id}')
-        return
-    
-    print(f'Mascotas del cliente {client.name}: ')
-    for p in client.pet:
-        print(f'\tID Mascota: {p.id_counter}, Nombre Mascota {p.name}')
+    try:
+        client_id = int(input('Ingrese el ID del cliente: '))
+        client = next((c for c in clientes if c.id_counter == client_id), None)
+        if not client:
+            raise ValueError(f'\tNo existe cliente registrado con el ID {client_id}')
         
-    pet_id = int(input('Ingrese el ID de la mascota para agendar cita: ').strip())
-    pet = next((p for p in client.pet if p.id_counter == pet_id), None)
-    if not pet:
-        print(f'\tNo existe mascota registrada con el ID: {pet_id} para el cliente {client.name}')
-        return
-    
-    date = input('Ingrese la fecha de la cita (DD-MM-YY): ').strip()
-    while not validateDate(date):
-        print('Fecha inválida, por favor ingresa la fecha en el formato correcto (ejm. 31-01-25): ')
+        print(f'Mascotas del cliente {client.name}: ')
+        for p in client.pet:
+            print(f'\tID Mascota: {p.id_counter}, Nombre Mascota {p.name}')
+            
+        pet_id = int(input('Ingrese el ID de la mascota para agendar cita: ').strip())
+        pet = next((p for p in client.pet if p.id_counter == pet_id), None)
+        if not pet:
+            raise ValueError(f'\tNo existe mascota registrada con el ID: {pet_id} para el cliente {client.name}')
+        
         date = input('Ingrese la fecha de la cita (DD-MM-YY): ').strip()
-    hour = input('Ingrese la hora de la cita (12:00): ').strip()
-    while not validateHour(hour):
-        print('Hora inválida, por favor agregar la hora en el formato correcto (ejm. 12:00) : ')
+        while not validateDate(date):
+            print('Fecha inválida, por favor ingresa la fecha en el formato correcto (ejm. 31-01-25): ')
+            date = input('Ingrese la fecha de la cita (DD-MM-YY): ').strip()
         hour = input('Ingrese la hora de la cita (12:00): ').strip()
-    service = input('Ingrese el servicio deseado: ').strip()
-    veterinarian = input('Ingrese el nombre del veterinario: ').strip()
-    
-    appointment = Veterinary.Date(date, hour, service, veterinarian)
-    pet.addDate(appointment)
-    print('Cita agregada con éxito')
+        while not validateHour(hour):
+            print('Hora inválida, por favor agregar la hora en el formato correcto (ejm. 12:00) : ')
+            hour = input('Ingrese la hora de la cita (12:00): ').strip()
+        service = input('Ingrese el servicio deseado: ').strip()
+        veterinarian = input('Ingrese el nombre del veterinario: ').strip()
+        
+        appointment = Veterinary.Date(date, hour, service, veterinarian)
+        pet.addDate(appointment)
+        print('Cita agregada con éxito')
+    except ValueError as e:
+        print(f'Error: {e}')
 
 
 def consultHistory():
@@ -165,26 +169,27 @@ def consultHistory():
             print(f'\t\tID Mascota: {p.id_counter}, Nombre mascota: {p.name}')
     
     print('\nConsultar historial')
-    client_id = int(input('Ingrese el ID del cliente: ').strip())
-    client = next((c for c in clientes if c.id_counter == client_id), None)
-    if not client:
-        print(f'\tNo existe cliente registrado con el ID {client_id}')
-        return
-    if not client.pet:
-        print(f'\tEl cliente {client.name} no tiene mascotas registradas')
-        return
-    
-    print(f'Mascotas del cliente {client.name}: ')
-    for p in client.pet:
-        print(f'\tMascota: Nombre: {p.name}, ID: {p.id_counter}')
+    try:
+        client_id = int(input('Ingrese el ID del cliente: ').strip())
+        client = next((c for c in clientes if c.id_counter == client_id), None)
+        if not client:
+            raise ValueError(f'\tNo existe cliente registrado con el ID {client_id}')
+            
+        if not client.pet:
+            raise ValueError(f'\tEl cliente {client.name} no tiene mascotas registradas')
         
-    pet_id = int(input('Ingrese el id de la mascota para consultar su historial: ').strip())
-    pet = next((p for p in client.pet if p.id_counter == pet_id), None)
-    if not pet:
-        print(f'\tNo existe mascota registrada con el ID: {pet_id} para el cliente {client.name}')
-        return
-    
-    pet.showHistory()
+        print(f'Mascotas del cliente {client.name}: ')
+        for p in client.pet:
+            print(f'\tMascota: Nombre: {p.name}, ID: {p.id_counter}')
+            
+        pet_id = int(input('Ingrese el id de la mascota para consultar su historial: ').strip())
+        pet = next((p for p in client.pet if p.id_counter == pet_id), None)
+        if not pet:
+            raise ValueError(f'\tNo existe mascota registrada con el ID: {pet_id} para el cliente {client.name}')
+        
+        pet.showHistory()
+    except ValueError as e:
+        print(f'Error: {e}')
 
 def updateDate():
     if not clientes:
@@ -202,36 +207,36 @@ def updateDate():
         for p in c.pet:
             print(f'\tId mascota: {p.id_counter}, Nombre mascota: {p.name}')
     
-    id_client = int(input('Ingrese el id del Cliente que desea consultar: '))
-    client = next((c for c in clientes if c.id_counter == id_client), None)
-    if not client:
-        print('No se encontró cliente registrado con ese ID')
-        return
-    
-    print(f'Mascotas del cliente {client.name}')
-    for p in client.pet:
-        print(f'\tId mascota: {p.id_counter}, Nombre mascota: {p.name}')
-    id_Pet = int(input('Ingrese el id de la mascota que desea consultar: '))
-    pet = next((p for p in client.pet if p.id_counter == id_Pet), None)
-    if not pet:
-        print('No se encontro máscota con ese ID')
-    
-    if not pet.historyClinic:
-        print(f'\tLa máscota con id {pet.id_counter} no tiene historial registrado')
-        return
-    print('Citas disponibles para actualizar')
-    pet.showHistory()
-    
-    id_History = int(input('Ingrese el id de la cita actualizar: '))
-    history = next((h for h in pet.historyClinic if h.id_counter == id_History), None)
-    
-    if not history:
-        print('\tNo se encontro historial clínico con ese ID')
-        return
-    
-    dateNew = pet.historyClinic[id_History-1]
-    print(f'Cambiando los datos de la cita {id_History}')
-    #print('Dejar en blanco los datos que no se quiere actualizar')
+    try:
+        id_client = int(input('Ingrese el id del Cliente que desea consultar: '))
+        client = next((c for c in clientes if c.id_counter == id_client), None)
+        if not client:
+            raise ValueError('No se encontró cliente registrado con ese ID')
+        
+        print(f'Mascotas del cliente {client.name}')
+        for p in client.pet:
+            print(f'\tId mascota: {p.id_counter}, Nombre mascota: {p.name}')
+        id_Pet = int(input('Ingrese el id de la mascota que desea consultar: '))
+        pet = next((p for p in client.pet if p.id_counter == id_Pet), None)
+        if not pet:
+            raise ValueError('No se encontro máscota con ese ID')
+        
+        if not pet.historyClinic:
+            raise ValueError(f'\tLa máscota con id {pet.id_counter} no tiene historial registrado')
+        
+        print('Citas disponibles para actualizar')
+        pet.showHistory()
+        
+        id_History = int(input('Ingrese el id de la cita actualizar: '))
+        history = next((h for h in pet.historyClinic if h.id_counter == id_History), None)
+        
+        if not history:
+            raise ValueError('\tNo se encontro historial clínico con ese ID')
+        
+        dateNew = pet.historyClinic[id_History-1]
+        print(f'Cambiando los datos de la cita {id_History}')
+    except ValueError as e:
+        print(f'Error: {e}')
     
     newDate = input('Ingrese la nueva fecha de la cita (DD-MM-YY): ').strip()
     while not validateDate(newDate):
@@ -267,37 +272,38 @@ def eraseDate():
         for p in c.pet:
             print(f'\tId mascota: {p.id_counter}, Nombre mascota: {p.name}')
     
-    id_client = int(input('Ingrese el id del Cliente que desea consultar: '))
-    client = next((c for c in clientes if c.id_counter == id_client), None)
-    if not client:
-        print('No se encontró cliente registrado con ese ID')
-        return
-    
-    print(f'Mascotas del cliente {client.name}')
-    for p in client.pet:
-        print(f'\tId mascota: {p.id_counter}, Nombre mascota: {p.name}')
-    id_Pet = int(input('Ingrese el id de la mascota que desea consultar: '))
-    pet = next((p for p in client.pet if p.id_counter == id_Pet), None)
-    if not pet:
-        print('No se encontro máscota con ese ID')
-    
-    if not pet.historyClinic:
-        print(f'\tLa máscota con id {pet.id_counter} no tiene historial registrado')
-        return
-    print('Citas disponibles para cancelar')
-    pet.showHistory()
-    
-    id_History = int(input('Ingrese el id de la cita a cancelar: '))
-    history = next((h for h in pet.historyClinic if h.id_counter == id_History), None)
-    
-    if not history:
-        print('\tNo se encontro historial clínico con ese ID')
-        return
-    
-    dateErase = pet.historyClinic[id_History-1]
-    print(f'Cancelando la cita con id {id_History}')
-    pet.eraseDate(dateErase)
-    print('Cita cancelada con éxito')
+    try:
+        id_client = int(input('Ingrese el id del Cliente que desea consultar: '))
+        client = next((c for c in clientes if c.id_counter == id_client), None)
+        if not client:
+            raise ValueError('No se encontró cliente registrado con ese ID')
+        
+        print(f'Mascotas del cliente {client.name}')
+        for p in client.pet:
+            print(f'\tId mascota: {p.id_counter}, Nombre mascota: {p.name}')
+        id_Pet = int(input('Ingrese el id de la mascota que desea consultar: '))
+        pet = next((p for p in client.pet if p.id_counter == id_Pet), None)
+        if not pet:
+            raise ValueError('No se encontro máscota con ese ID')
+        
+        if not pet.historyClinic:
+            raise ValueError(f'\tLa máscota con id {pet.id_counter} no tiene historial registrado')
+            
+        print('Citas disponibles para cancelar')
+        pet.showHistory()
+        
+        id_History = int(input('Ingrese el id de la cita a cancelar: '))
+        history = next((h for h in pet.historyClinic if h.id_counter == id_History), None)
+        
+        if not history:
+            raise ValueError('\tNo se encontro historial clínico con ese ID')
+        
+        dateErase = pet.historyClinic[id_History-1]
+        print(f'Cancelando la cita con id {id_History}')
+        pet.eraseDate(dateErase)
+        print('Cita cancelada con éxito')
+    except ValueError as e:
+        print(f'Error: {e}')
     
 
 # Funciones auxiliares
