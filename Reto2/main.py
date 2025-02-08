@@ -4,6 +4,13 @@ from abc import ABC, abstractmethod
 clientes = []
 pets = []
 
+def display_divider(text=""):
+    """Función para mostrar divisores en el menú"""
+    width = 50
+    print("\n" + "=" * width)
+    if text:
+        print(text.center(width))
+        print("=" * width)
 # Clases Principales
 class Veterinary:
     class Person:
@@ -77,14 +84,15 @@ def registerClient():
         print(f'Error: {e}')
 
 def registerPet(): 
-    print('Clientes disponibles:')
+    
+    print('CLIENTES DISPONIBLES:')
     
     if not clientes:
-        print('\tNo existen clientes registrados')
+        print('\t***No existen clientes registrados')
         return
         
     for c in clientes:
-        print(f'\tID: {c.id_counter}, Nombre: {c.name}')
+        print(f'\t|ID: {c.id_counter}, | Nombre: {c.name}|')
     
     try:
         idClient = int(input('Ingrese el id del cliente que desea agregarle una mascota: ').strip())
@@ -93,9 +101,17 @@ def registerPet():
             raise ValueError(f'No existen clientes registrados con el ID {idClient}')
             
         namePet = input(f'Ingrese el nombre de la mascota de {client.name}: ').strip()
+        if not namePet:
+            raise ValueError('El nombre de la mascota no puede estar vacío')
         specie = input('Ingrese la especie de la mascota: ').strip()
+        if not specie:
+            raise ValueError('La especie de la mascota no puede estar vacía')
         race = input('Ingrese la raza de la mascota: ').strip()
+        if not race:
+            raise ValueError('La raza de la mascota no puede estar vacía')
         age = input('Ingrese la edad de la mascota: ').strip()
+        if not age:
+            raise ValueError('La edad de la mascota no puede estar vacía')
         
         pet = Veterinary.Pet(namePet, specie, race, age)
         pets.append(pet)
@@ -106,7 +122,7 @@ def registerPet():
         print(f'Error: {e}')
 
 def scheduleDate():
-    print('Clientes registrados:')
+    print('CLIENTES REGISTRADOS:')
     
     if not clientes:
         print('\tNo existen clientes registrados')
@@ -116,7 +132,7 @@ def scheduleDate():
         return
         
     for c in clientes:
-        print(f'\tID: {c.id_counter}, Nombre: {c.name}')          
+        print(f'\t|ID: {c.id_counter},| Nombre: {c.name}|')          
     
     try:
         client_id = int(input('Ingrese el ID del cliente: '))
@@ -126,7 +142,7 @@ def scheduleDate():
         
         print(f'Mascotas del cliente {client.name}: ')
         for p in client.pet:
-            print(f'\tID Mascota: {p.id_counter}, Nombre Mascota {p.name}')
+            print(f'\t|ID Mascota: {p.id_counter},| Nombre Mascota {p.name}|')
             
         pet_id = int(input('Ingrese el ID de la mascota para agendar cita: ').strip())
         pet = next((p for p in client.pet if p.id_counter == pet_id), None)
@@ -152,7 +168,7 @@ def scheduleDate():
 
 
 def consultHistory():
-    print('Clientes registrados:')
+    print('CLIENTES REGISTRADOS:')
     
     if not clientes:
         print('\tNo existen clientes registrados')
@@ -162,13 +178,13 @@ def consultHistory():
         return
     
     for c in clientes:
-        print(f'\tID Cliente: {c.id_counter}, Nombre cliente: {c.name}, Mascotas: ')
+        print(f'\t--ID Cliente: {c.id_counter},-- Nombre cliente: {c.name},-- Mascotas: ⤵️')
         if not c.pet:
             print('\t\tNo tiene mascotas registradas')
         for p in c.pet:
-            print(f'\t\tID Mascota: {p.id_counter}, Nombre mascota: {p.name}')
+            print(f'\t\t|ID Mascota: {p.id_counter},| Nombre mascota: |{p.name}')
     
-    print('\nConsultar historial')
+    print('CONSULTAR HISTORIAL')
     try:
         client_id = int(input('Ingrese el ID del cliente: ').strip())
         client = next((c for c in clientes if c.id_counter == client_id), None)
@@ -234,7 +250,7 @@ def updateDate():
             raise ValueError('\tNo se encontro historial clínico con ese ID')
         
         dateNew = pet.historyClinic[id_History-1]
-        print(f'Cambiando los datos de la cita {id_History}')
+        print(f'Cambiando los datos de la cita... {id_History}')
     except ValueError as e:
         print(f'Error: {e}')
     
@@ -254,7 +270,7 @@ def updateDate():
     dateNew.service = newService
     dateNew.veterinarian = newVeterinarian
     
-    print('Cita actualizada con exito')
+    display_divider('Cita actualizada con exito')
 
 def eraseDate():
     if not clientes:
@@ -264,7 +280,7 @@ def eraseDate():
         print('No se tienen mascotas registradas')
         return
     
-    print('Clientes y mascotas registrados')
+    display_divider('Clientes y mascotas registrados')
     for c in clientes:
         print(f'Id cliente: {c.id_counter}, Nombre: {c.name}, Mascotas:')
         if not c.pet:
@@ -288,7 +304,7 @@ def eraseDate():
         
         if not pet.historyClinic:
             raise ValueError(f'\tLa máscota con id {pet.id_counter} no tiene historial registrado')
-            
+           
         print('Citas disponibles para cancelar')
         pet.showHistory()
         
@@ -339,25 +355,25 @@ def main():
         option = input('Seleccione una opcion: ')
         
         if option == '1':
-            print('\n+++ REGISTRO DE CLIENTES +++')
+            display_divider('REGISTRO DE CLIENTES')
             registerClient()
         elif option == '2':
-            print('\n+++ REGISTRO DE MASCOTAS +++')
+            display_divider('REGISTRO DE MASCOTAS')
             registerPet()
         elif option == '3':
-            print('\n+++ PROGRAMACIÓN DE CITAS +++')
+            display_divider('PROGRAMACIÓN DE CITAS')
             scheduleDate()
         elif option == '4':
-            print('\n+++ ACTUALIZACIÓN DE CITAS +++')
+            display_divider('ACTUALIZACIÓN DE CITAS')
             updateDate()
         elif option == '5':
-            print('\n+++ ELIMINACIÓN DE CITAS +++')
+            display_divider('ELIMINACIÓN DE CITAS')
             eraseDate()
         elif option == '6':
-            print('\n+++ CONSULTA DE HISTORIAL +++')
+            display_divider('CONSULTA DE HISTORIAL')
             consultHistory()
         elif option == '7':
-            print('\n+++ HASTA PRONTO +++')
+            display_divider('HASTA PRONTO ')
             break
         else:
             print('Opción no valida')
