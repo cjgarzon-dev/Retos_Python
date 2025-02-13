@@ -140,6 +140,9 @@ def scheduleDate():
         if not client:
             raise ValueError(f'\tNo existe cliente registrado con el ID {client_id}')
         
+        if not client.pet:
+            raise ValueError(f'El cliente {client.name} no tiene mascotas registradas')
+            
         print(f'Mascotas del cliente {client.name}: ')
         for p in client.pet:
             print(f'\t|ID Mascota: {p.id_counter},| Nombre Mascota {p.name}|')
@@ -228,6 +231,8 @@ def updateDate():
         client = next((c for c in clientes if c.id_counter == id_client), None)
         if not client:
             raise ValueError('No se encontró cliente registrado con ese ID')
+        if not client.pet:
+            raise ValueError(f'El cliente {client.name} no tiene mascotas registradas')
         
         print(f'Mascotas del cliente {client.name}')
         for p in client.pet:
@@ -251,26 +256,26 @@ def updateDate():
         
         dateNew = pet.historyClinic[id_History-1]
         print(f'Cambiando los datos de la cita... {id_History}')
+    
+        newDate = input('Ingrese la nueva fecha de la cita (DD-MM-YY): ').strip()
+        while not validateDate(newDate):
+            print('Fecha inválida, por favor ingresa la fecha en el formato correcto (ejm. 31-01-25): ')
+            newDate = input('Ingrese la nueva fecha de la cita (DD-MM-YY): ').strip()
+        newHour = input('Ingrese la nueva hora de la cita (12:00): ').strip()
+        while not validateHour(newHour):
+            print('Hora inválida, por favor agregar la hora en el formato correcto (ejm. 12:00) : ')
+            newHour = input('Ingrese la nueva hora de la cita (12:00): ').strip()
+        newService = input('Ingrese el nuevo servicio deseado: ').strip()
+        newVeterinarian = input('Ingrese el nombre del nuevo veterinario: ').strip()
+        
+        dateNew.date = newDate
+        dateNew.hour = newHour
+        dateNew.service = newService
+        dateNew.veterinarian = newVeterinarian
+        
+        display_divider('Cita actualizada con exito')
     except ValueError as e:
         print(f'Error: {e}')
-    
-    newDate = input('Ingrese la nueva fecha de la cita (DD-MM-YY): ').strip()
-    while not validateDate(newDate):
-        print('Fecha inválida, por favor ingresa la fecha en el formato correcto (ejm. 31-01-25): ')
-        newDate = input('Ingrese la nueva fecha de la cita (DD-MM-YY): ').strip()
-    newHour = input('Ingrese la nueva hora de la cita (12:00): ').strip()
-    while not validateHour(newHour):
-        print('Hora inválida, por favor agregar la hora en el formato correcto (ejm. 12:00) : ')
-        newHour = input('Ingrese la nueva hora de la cita (12:00): ').strip()
-    newService = input('Ingrese el nuevo servicio deseado: ').strip()
-    newVeterinarian = input('Ingrese el nombre del nuevo veterinario: ').strip()
-    
-    dateNew.date = newDate
-    dateNew.hour = newHour
-    dateNew.service = newService
-    dateNew.veterinarian = newVeterinarian
-    
-    display_divider('Cita actualizada con exito')
 
 def eraseDate():
     if not clientes:
@@ -293,6 +298,8 @@ def eraseDate():
         client = next((c for c in clientes if c.id_counter == id_client), None)
         if not client:
             raise ValueError('No se encontró cliente registrado con ese ID')
+        if not client.pet:
+            raise ValueError(f'El cliente {client.name} no tiene mascotas registradas')
         
         print(f'Mascotas del cliente {client.name}')
         for p in client.pet:
@@ -304,7 +311,7 @@ def eraseDate():
         
         if not pet.historyClinic:
             raise ValueError(f'\tLa máscota con id {pet.id_counter} no tiene historial registrado')
-           
+        
         print('Citas disponibles para cancelar')
         pet.showHistory()
         
