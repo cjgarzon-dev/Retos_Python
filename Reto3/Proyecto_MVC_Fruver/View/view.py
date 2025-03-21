@@ -60,6 +60,7 @@ class ViewShopping:
             quantity = int(self.entry_quantity.get())
             self.controller.add_to_cart(id_producto, quantity)
             messagebox.showinfo("Éxito", "Producto agregado correctamente")
+            print(f'CANT: {quantity}')
         except Exception as e:
             messagebox.showerror("Error", f"Ocurrió un error: {e}")
 
@@ -69,8 +70,10 @@ class ViewShopping:
         # Actualizar la vista de productos en el Treeview
         for row in self.treeview_products.get_children():
             self.treeview_products.delete(row)
+            
         for id_producto, product in self.controller.get_products().items():
-            self.treeview_products.insert("", "end", iid=str(id_producto), values=(product.name, product.price, product.stock))
+            self.treeview_products.insert("", "end", iid=str(id_producto), values=(product.name, product.price, product.stock)) # - int(self.entry_quantity.get())))
+            
         total = self.controller.calculate_total()
         self.etiqueta_total.config(text=f"Total: ${total}")
 

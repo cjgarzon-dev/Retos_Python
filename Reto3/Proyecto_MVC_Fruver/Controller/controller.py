@@ -8,6 +8,9 @@ class ControllerShopping:
 
     def get_products(self):
         return self.model.products
+    
+    def reduce_stock(self):
+        return self.model.quantity
 
     def add_to_cart(self, id_prod, quantity):  
         product = self.model.get_product(id_prod)

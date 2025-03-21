@@ -9,6 +9,7 @@ class Product:
         if quantity > self.stock:
             raise ValueError('No hay suficiente stock')
         self.stock -= quantity
+        return quantity
 
 class Shopping:
     def __init__(self):
