@@ -60,7 +60,9 @@ class ViewShopping:
             quantity = int(self.entry_quantity.get())
             self.controller.add_to_cart(id_producto, quantity)
             messagebox.showinfo("Éxito", "Producto agregado correctamente")
-            print(f'CANT: {quantity}')
+            print('ENTRA 1')
+            self.entry_quantity.delete(quantity)
+            print('ENTRA 2')
         except Exception as e:
             messagebox.showerror("Error", f"Ocurrió un error: {e}")
 

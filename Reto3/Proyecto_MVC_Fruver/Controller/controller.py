@@ -18,6 +18,7 @@ class ControllerShopping:
             if quantity > product.stock:
                 raise ValueError("Stock insuficiente")
             self.cart.append({"producto": product.name, "cantidad": quantity, "precio_total": product.price * quantity})
+            product.reduce_stock(quantity)
         else:
             raise ValueError("Producto no encontrado")
         
@@ -27,7 +28,7 @@ class ControllerShopping:
 
     def finish_shopping(self):
         total = sum(item["precio_total"] for item in self.cart)
-        messagebox.showinfo('Compra finalizada', f'Total: {total}')
+        messagebox.showinfo('Compra finalizada', f'Total: ${total}')
         for item in self.cart:
             producto_id = next((p_id for p_id, p in self.model.products.items() if p.name == item["producto"]), None)
             if producto_id is not None:

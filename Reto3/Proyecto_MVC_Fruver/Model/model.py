@@ -28,7 +28,7 @@ class Shopping:
         """Registra una venta y actualiza el stock del producto."""
         product = self.get_product(id_prod)
         if product:
-            product.reduce_stock(quantity)
+            #product.reduce_stock(quantity)
             total = product.price * quantity
             self.history.append({
                 "Nombre": product.name,
