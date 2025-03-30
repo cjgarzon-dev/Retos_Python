@@ -15,6 +15,8 @@ class ControllerShopping:
     def add_to_cart(self, id_prod, quantity):  
         product = self.model.get_product(id_prod)
         if product:
+            if quantity <= 0:
+                raise ValueError('Valor incorrecto')
             if quantity > product.stock:
                 raise ValueError("Stock insuficiente")
             self.cart.append({"producto": product.name, "cantidad": quantity, "precio_total": product.price * quantity})
@@ -43,3 +45,6 @@ class ControllerShopping:
 
     def get_sales_history(self):
         return self.model.history
+    
+    def get_products_cart(self):
+        return self.cart

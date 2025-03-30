@@ -24,6 +24,14 @@ class ViewShopping:
         self.window.mainloop()  
         
     def configure_interface(self):
+        # Crear Treeview principal
+        frame_principal = tk.Frame(self.window, padx=30, pady=30, bg="#f4f4f9")
+        frame_principal.pack(fill="both", expand=True)
+        
+        # Título
+        title = tk.Label(frame_principal, text="Bienvenido a la Tienda Fruver", font=("Arial", 20, "bold"), fg="green", bg="#f4f4f9")
+        title.grid(row=0, column=0, columnspan=3, pady=20)
+        
         # Crear Treeview para mostrar productos
         self.treeview_products = ttk.Treeview(self.window, columns=("Name", "Price", "Stock"), show="headings")
         self.treeview_products.heading("Name", text="Nombre")
@@ -35,6 +43,7 @@ class ViewShopping:
         self.button_add_product = tk.Button(self.window, text="Agregar Producto", command=self.add_product)
         self.button_finish = tk.Button(self.window, text="Finalizar Compra", command=self.controller.finish_shopping)
         self.button_history = tk.Button(self.window, text="Ver Historial de Ventas", command=self.show_history)  # Nuevo botón para ver historial
+        self.button_cart = tk.Button(self.window, text="Ver Carrito", command=self.show_view_cart)
         self.etiqueta_total = tk.Label(self.window, text="Total: $0.00")
         
         # Ubicar elementos en el Canvas
@@ -44,6 +53,7 @@ class ViewShopping:
         self.canvas.create_window(400, 450, window=self.button_finish)
         self.canvas.create_window(400, 500, window=self.etiqueta_total)
         self.canvas.create_window(400, 550, window=self.button_history)  # Posicionar el nuevo botón
+        #self.canvas.create_window(400, 550, frame_principal=self.button_cart)
 
     def load_products(self):
         # Insertar productos en el Treeview desde el controlador
@@ -60,9 +70,7 @@ class ViewShopping:
             quantity = int(self.entry_quantity.get())
             self.controller.add_to_cart(id_producto, quantity)
             messagebox.showinfo("Éxito", "Producto agregado correctamente")
-            print('ENTRA 1')
             self.entry_quantity.delete(quantity)
-            print('ENTRA 2')
         except Exception as e:
             messagebox.showerror("Error", f"Ocurrió un error: {e}")
 
@@ -112,3 +120,29 @@ class ViewShopping:
         button_close.pack(pady=10)
 
         history_window.mainloop()
+    
+    def show_view_cart(self):
+        # Obtener el carrito de compras desde el controlador
+        cart_history = self.controller.get_products_cart()
+        cart_window = tk.Toplevel(self.window)
+        cart_window.title("Carrito de Compras")
+        
+        # Crear Treeview para el carrito de compras
+        treeview_cart = ttk.Treeview(cart_window, columns=("Producto", "Cantidad", "Precio Total"), show="headings", height=10)
+        treeview_cart.heading("Producto", text="Producto")
+        treeview_cart.heading("Cantidad", text="Cantidad")
+        treeview_cart.heading("Precio Total", text="Precio Total")
+        treeview_cart.column("Producto", width=200)
+        treeview_cart.column("Cantidad", width=100)
+        treeview_cart.column("Precio Total", width=150)
+                
+        # Insertar el carrito de ventas al Treeview 
+        for sale in cart_history:
+            treeview_cart.insert("", "end", values=(sale["Name"], sale["Cantidad"], f"${sale['Precio_total']:.2f}"))
+        treeview_cart.pack(padx=20, pady=20)
+        
+        # Agregar botón para cerrar la ventana del historial de ventas
+        button_close = tk.Button(cart_window, text="Cerrar", command=cart_window.destroy)
+        button_close.pack(pady=10)
+
+        cart_window.mainloop()
