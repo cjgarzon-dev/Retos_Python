@@ -30,7 +30,16 @@ class ControllerShopping:
 
     def finish_shopping(self):
         total = sum(item["precio_total"] for item in self.cart)
-        messagebox.showinfo('Compra finalizada', f'Total: ${total}')
+        bill = "*** RECIBO DE COMPRA ***\n\n"
+        bill += "-"*30 + "\n"
+        cart_aux = self.get_products_cart()
+        for prod in cart_aux:
+            bill += f"{prod['producto']} - ${prod['precio_total']:.2f}\n"
+        bill += "-"*30 + "\n"
+        bill += f"Total: ${total:.2f}\n"
+        bill += "-"*30
+        messagebox.showinfo('Compra finalizada', bill)
+
         for item in self.cart:
             producto_id = next((p_id for p_id, p in self.model.products.items() if p.name == item["producto"]), None)
             if producto_id is not None:
