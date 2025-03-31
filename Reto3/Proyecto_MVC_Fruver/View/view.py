@@ -8,17 +8,19 @@ class ViewShopping:
         self.controller.view = self
         self.window = tk.Tk()
         self.window.title("CAJA FRUVER - Frutas y Verduras")
-        self.window.geometry("800x600")
+        self.window.geometry("900x600")
 
         # Cargar imagen de fondo
         self.bg_image = Image.open('../Retos_Python/Reto3/Proyecto_MVC_Fruver/View/background.jpg')
-        self.bg_image = self.bg_image.resize((800, 600), Image.LANCZOS)
+        self.bg_image = self.bg_image.resize((900, 600), Image.LANCZOS)
         self.bg_image = ImageTk.PhotoImage(self.bg_image)
+        
         '''
-        self.canvas = tk.Canvas(self.window, width=800, height=600)
+        self.canvas = tk.Canvas(self.window, width=900, height=600)
         self.canvas.pack(fill="both", expand=True)
         self.canvas.create_image(0, 0, image=self.bg_image, anchor="nw")
         '''
+        
         self.configure_interface()  
         self.load_products()  
         self.window.mainloop()  
@@ -104,7 +106,7 @@ class ViewShopping:
         self.canvas.create_window(400, 450, window=self.button_finish)
         self.canvas.create_window(400, 500, window=self.etiqueta_total)
         self.canvas.create_window(400, 550, window=self.button_history)  # Posicionar el nuevo botón
-        #self.canvas.create_window(400, 550, frame_principal=self.button_cart)
+        self.canvas.create_window(400, 550, window=self.button_cart)
         '''
     def load_products(self):
         # Insertar productos en el Treeview desde el controlador
