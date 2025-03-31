@@ -42,6 +42,7 @@ class ControllerShopping:
             self.view.update_view_products() 
         self.cart.clear()
         self.view.reset_total()
+        self.view.reset_cart()
 
     def get_sales_history(self):
         return self.model.history
